@@ -26,7 +26,7 @@ export default class Transaction {
 
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })
-  category: string;
+  category_id: string;
 
   @CreateDateColumn()
   created_at: Date;
