@@ -10,12 +10,16 @@ export default class CreateCategoryService {
         title,
       },
     });
-    if (checkCategoryExists) {
-      throw new AppError('Category already exists');
-    }
-    const category = categoryRepository.create({ title });
-    await categoryRepository.save(category);
+    /**
+     * Caso exista, a categoria a aplicação devolve a categoria e não cria uma nova
+     * Caso não exista, cria uma nova e devolve
+     */
+    if (!checkCategoryExists) {
+      const category = categoryRepository.create({ title });
+      await categoryRepository.save(category);
 
-    return category;
+      return category;
+    }
+    return checkCategoryExists;
   }
 }
