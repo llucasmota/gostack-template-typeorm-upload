@@ -8,7 +8,7 @@ import CreateTransactionService from '../services/CreateTransactionService';
 const transactionsRouter = Router();
 
 transactionsRouter.get('/', async (request: Request, response: Response) => {
-  // TODO
+  return response.json({ message: 'olá' });
 });
 
 transactionsRouter.post('/', async (request: Request, response: Response) => {

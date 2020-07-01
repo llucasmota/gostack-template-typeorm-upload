@@ -2,12 +2,13 @@ import AppError from '../errors/AppError';
 import { getRepository } from 'typeorm';
 import Transaction from '../models/Transaction';
 import transactionsRouter from '../routes/transactions.routes';
+import CategoryService from './CreateCategoryService';
 
 interface Request {
   title: string;
   value: number;
   type: 'income' | 'outcome';
-  category_id: string;
+  category: string;
 }
 
 class CreateTransactionService {
@@ -15,14 +16,16 @@ class CreateTransactionService {
     title,
     value,
     type,
-    category_id,
+    category,
   }: Request): Promise<Transaction> {
     const transactionRepository = getRepository(Transaction);
+    const categoryService = new CategoryService();
+    const { id } = await categoryService.execute(category);
     const transaction = transactionRepository.create({
       title,
       value,
       type,
-      category_id,
+      category_id: id,
     });
     await transactionRepository.save(transaction);
     return transaction;
