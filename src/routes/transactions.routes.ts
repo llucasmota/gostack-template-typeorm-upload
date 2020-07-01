@@ -13,13 +13,13 @@ transactionsRouter.get('/', async (request: Request, response: Response) => {
 
 transactionsRouter.post('/', async (request: Request, response: Response) => {
   // TODO
-  const { title, value, type, category_id } = request.body;
+  const { title, value, type, category } = request.body;
   const createTransactionService = new CreateTransactionService();
   const transaction = await createTransactionService.execute({
     title,
     value,
     type,
-    category_id,
+    category,
   });
 
   return response.json({ transaction });
