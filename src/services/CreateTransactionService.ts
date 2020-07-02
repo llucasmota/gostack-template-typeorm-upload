@@ -20,6 +20,9 @@ class CreateTransactionService {
   }: Request): Promise<Transaction> {
     const transactionRepository = getRepository(Transaction);
     const categoryService = new CategoryService();
+    /**
+     * Recupera o id da categoria
+     */
     const { id } = await categoryService.execute(category);
     const transaction = transactionRepository.create({
       title,

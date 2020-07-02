@@ -2,7 +2,7 @@ import { Router, Response, Request } from 'express';
 
 import TransactionsRepository from '../repositories/TransactionsRepository';
 // import CreateTransactionService from '../services/CreateTransactionService';
-// import DeleteTransactionService from '../services/DeleteTransactionService';
+import DeleteTransactionService from '../services/DeleteTransactionService';
 // import ImportTransactionsService from '../services/ImportTransactionsService';
 import CreateTransactionService from '../services/CreateTransactionService';
 const transactionsRouter = Router();
@@ -28,7 +28,11 @@ transactionsRouter.post('/', async (request: Request, response: Response) => {
 transactionsRouter.delete(
   '/:id',
   async (request: Request, response: Response) => {
-    // TODO
+    const { id } = request.params;
+    const deleteTransactionService = new DeleteTransactionService();
+    const transactionDelete = await deleteTransactionService.execute(id);
+
+    return response.status(204).send();
   },
 );
 
