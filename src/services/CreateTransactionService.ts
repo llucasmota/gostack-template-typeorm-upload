@@ -10,6 +10,13 @@ interface Request {
   type: 'income' | 'outcome';
   category: string;
 }
+interface ResponseTransaction {
+  id: string;
+  title: string;
+  value: number;
+  type: 'income' | 'outcome';
+  category: string;
+}
 
 class CreateTransactionService {
   public async execute({
@@ -17,21 +24,33 @@ class CreateTransactionService {
     value,
     type,
     category,
-  }: Request): Promise<Transaction> {
+  }: Request): Promise<ResponseTransaction> {
+    if (!['income', 'outcome'].includes(type)) {
+      throw new AppError('Tipo não permitido', 400);
+    }
+
     const transactionRepository = getRepository(Transaction);
     const categoryService = new CategoryService();
     /**
      * Recupera o id da categoria
      */
-    const { id } = await categoryService.execute(category);
+    const categoryResponse = await categoryService.execute(category);
     const transaction = transactionRepository.create({
       title,
       value,
       type,
-      category_id: id,
+      category_id: categoryResponse.id,
     });
+
     await transactionRepository.save(transaction);
-    return transaction;
+    const responseTransaction = {
+      id: transaction.id,
+      title: transaction.title,
+      value: transaction.value,
+      type: transaction.type,
+      category: categoryResponse.title,
+    };
+    return responseTransaction;
   }
 }
 

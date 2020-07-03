@@ -22,7 +22,13 @@ transactionsRouter.post('/', async (request: Request, response: Response) => {
     category,
   });
 
-  return response.json({ transaction });
+  return response.json({
+    id: transaction.id,
+    title: transaction.title,
+    value: transaction.value,
+    type: transaction.type,
+    category: transaction.category,
+  });
 });
 
 transactionsRouter.delete(
