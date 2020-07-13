@@ -1,7 +1,7 @@
 import AppError from '../errors/AppError';
-import { getRepository } from 'typeorm';
+import { getRepository, getCustomRepository } from 'typeorm';
 import Transaction from '../models/Transaction';
-import transactionsRouter from '../routes/transactions.routes';
+import TransactionRepository from '../repositories/TransactionsRepository';
 import CategoryService from './CreateCategoryService';
 
 interface Request {
@@ -18,7 +18,7 @@ interface ResponseTransaction {
   category: string;
 }
 
-class CreateTransactionService {
+export default class CreateTransactionService {
   public async execute({
     title,
     value,
@@ -29,12 +29,20 @@ class CreateTransactionService {
       throw new AppError('Tipo não permitido', 400);
     }
 
-    const transactionRepository = getRepository(Transaction);
+    const transactionRepository = getCustomRepository(TransactionRepository);
     const categoryService = new CategoryService();
     /**
      * Recupera o id da categoria
      */
     const categoryResponse = await categoryService.execute(category);
+    const getMyBalance = await transactionRepository.getBalance();
+    if (type === 'outcome') {
+      const { total } = await transactionRepository.getBalance();
+      if (total < value) {
+        throw new AppError('Outcome value not allowed', 400);
+      }
+    }
+
     const transaction = transactionRepository.create({
       title,
       value,
@@ -53,5 +61,3 @@ class CreateTransactionService {
     return responseTransaction;
   }
 }
-
-export default CreateTransactionService;
