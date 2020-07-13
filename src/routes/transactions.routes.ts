@@ -5,10 +5,14 @@ import TransactionsRepository from '../repositories/TransactionsRepository';
 import DeleteTransactionService from '../services/DeleteTransactionService';
 // import ImportTransactionsService from '../services/ImportTransactionsService';
 import CreateTransactionService from '../services/CreateTransactionService';
+import { getCustomRepository } from 'typeorm';
 const transactionsRouter = Router();
 
 transactionsRouter.get('/', async (request: Request, response: Response) => {
-  return response.json({ message: 'olá' });
+  const transactionRepository = getCustomRepository(TransactionsRepository);
+  const balance = await transactionRepository.getBalance();
+  const transactions = await transactionRepository.find();
+  return response.json({ transactions, balance });
 });
 
 transactionsRouter.post('/', async (request: Request, response: Response) => {
