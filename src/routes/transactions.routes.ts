@@ -1,9 +1,9 @@
-import { Router, Response, Request } from 'express';
+import express, { Router, Response, Request } from 'express';
 
 import multer from 'multer';
 import DeleteTransactionService from '../services/DeleteTransactionService';
 import ReturnTransactionService from '../services/ReturnTransactionsBalanceService';
-// import ImportTransactionsService from '../services/ImportTransactionsService';
+import ImportTransactionsService from '../services/ImportTransactionsService';
 import CreateTransactionService from '../services/CreateTransactionService';
 import multerConfig from '../config/uploadConfig';
 
@@ -52,7 +52,9 @@ transactionsRouter.post(
   '/import',
   upload.single('transaction'),
   async (request: Request, response: Response) => {
-    console.log(request.file);
+    const csvFile: Express.Multer.File = request.file;
+    const importTransactionsService = new ImportTransactionsService();
+    const csvImport = importTransactionsService.execute(csvFile);
 
     return response.json({ message: 'olá' });
   },
