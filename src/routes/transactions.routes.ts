@@ -4,6 +4,7 @@ import multer from 'multer';
 import DeleteTransactionService from '../services/DeleteTransactionService';
 import ReturnTransactionService from '../services/ReturnTransactionsBalanceService';
 import ImportTransactionsService from '../services/ImportTransactionsService';
+import LoadCsvFileService from '../services/LoadCsvFileService';
 import CreateTransactionService from '../services/CreateTransactionService';
 import multerConfig from '../config/uploadConfig';
 
@@ -52,11 +53,10 @@ transactionsRouter.post(
   '/import',
   upload.single('transaction'),
   async (request: Request, response: Response) => {
-    const csvFile: Express.Multer.File = request.file;
-    const importTransactionsService = new ImportTransactionsService();
-    const csvImport = importTransactionsService.execute(csvFile);
+    const loadCsvFileService = new LoadCsvFileService();
+    const csvImport = await loadCsvFileService.execute(request.file);
 
-    return response.json({ message: 'olá' });
+    return response.json({ csvImport });
   },
 );
 
