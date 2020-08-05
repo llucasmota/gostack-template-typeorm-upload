@@ -21,7 +21,6 @@ export default class CreateCategoryService {
       console.log(`${categoryCreated} categoria criada`);
       return categoryCreated;
     }
-    console.log(`${checkCategoryExists} categoria já estava criada`);
     return checkCategoryExists;
   }
 }

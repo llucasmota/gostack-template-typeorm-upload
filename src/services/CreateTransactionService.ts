@@ -24,7 +24,7 @@ export default class CreateTransactionService {
     value,
     type,
     category,
-  }: Request): Promise<ResponseTransaction> {
+  }: Request): Promise<Transaction> {
     if (!['income', 'outcome'].includes(type)) {
       throw new AppError('Tipo não permitido', 400);
     }
@@ -51,13 +51,7 @@ export default class CreateTransactionService {
     });
 
     await transactionRepository.save(transaction);
-    const responseTransaction = {
-      id: transaction.id,
-      title: transaction.title,
-      value: transaction.value,
-      type: transaction.type,
-      category: categoryResponse.title,
-    };
-    return responseTransaction;
+
+    return transaction;
   }
 }

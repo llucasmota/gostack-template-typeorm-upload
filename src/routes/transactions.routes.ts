@@ -28,13 +28,7 @@ transactionsRouter.post('/', async (request: Request, response: Response) => {
     category,
   });
 
-  return response.json({
-    id: transaction.id,
-    title: transaction.title,
-    value: transaction.value,
-    type: transaction.type,
-    category: transaction.category,
-  });
+  return response.json(transaction);
 });
 
 transactionsRouter.delete(
@@ -51,12 +45,14 @@ transactionsRouter.delete(
 
 transactionsRouter.post(
   '/import',
-  upload.single('transaction'),
+  upload.single('file'),
   async (request: Request, response: Response) => {
-    const loadCsvFileService = new LoadCsvFileService();
-    const csvImport = await loadCsvFileService.execute(request.file);
+    const importTransactionsService = new ImportTransactionsService();
+    const csvImport = await importTransactionsService.execute(
+      request.file.filename,
+    );
 
-    return response.json({ csvImport });
+    return response.json(csvImport);
   },
 );
 

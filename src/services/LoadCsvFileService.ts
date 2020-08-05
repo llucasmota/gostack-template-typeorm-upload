@@ -7,12 +7,17 @@ import uploadConfig from '../config/uploadConfig';
 import parse from 'csv-parse';
 import Transaction from '../models/Transaction';
 
-export default class LoadCsvFileService {
-  async execute(csvPath: Express.Multer.File): Promise<Transaction[]> {
-    const csvFilePath = path.resolve(uploadConfig.directory, csvPath.filename);
-    const myCsv = await csv().fromFile(csvFilePath);
-    console.log(myCsv);
+interface Request {
+  title: string;
+  value: number;
+  type: 'income' | 'outcome';
+  category: string;
+}
 
+export default class LoadCsvFileService {
+  async execute(csvPath: string): Promise<Request[]> {
+    const csvFilePath = path.resolve(uploadConfig.directory, csvPath);
+    const myCsv = await csv().fromFile(csvFilePath);
     return myCsv;
   }
 }
