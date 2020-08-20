@@ -1,6 +1,7 @@
 import AppError from '../errors/AppError';
 import { getRepository, getCustomRepository } from 'typeorm';
 import Transaction from '../models/Transaction';
+import Category from '../models/Category';
 import TransactionRepository from '../repositories/TransactionsRepository';
 import CategoryService from './CreateCategoryService';
 
@@ -13,9 +14,11 @@ interface Request {
 interface ResponseTransaction {
   id: string;
   title: string;
-  value: number;
   type: 'income' | 'outcome';
-  category: string;
+  value: number;
+  created_at: Date;
+  updated_at: Date;
+  category: Category;
 }
 
 export default class CreateTransactionService {
@@ -24,7 +27,7 @@ export default class CreateTransactionService {
     value,
     type,
     category,
-  }: Request): Promise<Transaction> {
+  }: Request): Promise<ResponseTransaction> {
     if (!['income', 'outcome'].includes(type)) {
       throw new AppError('Tipo não permitido', 400);
     }
@@ -47,11 +50,19 @@ export default class CreateTransactionService {
       title,
       value,
       type,
-      category_id: categoryResponse.id,
+      category: categoryResponse,
     });
 
     await transactionRepository.save(transaction);
 
-    return transaction;
+    return {
+      id: transaction.id,
+      title: transaction.title,
+      type: transaction.type,
+      value: transaction.value,
+      created_at: transaction.created_at,
+      updated_at: transaction.updated_at,
+      category: categoryResponse,
+    };
   }
 }
