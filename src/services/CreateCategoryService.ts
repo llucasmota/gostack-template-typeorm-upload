@@ -18,7 +18,6 @@ export default class CreateCategoryService {
     if (!checkCategoryExists) {
       const categoryCreated = categoryRepository.create({ title: category });
       await categoryRepository.save(categoryCreated);
-      console.log(`${categoryCreated} categoria criada`);
       return categoryCreated;
     }
     return checkCategoryExists;

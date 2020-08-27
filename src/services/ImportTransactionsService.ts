@@ -43,7 +43,6 @@ export default class ImportTransactionsService {
     });
     console.log(`finished: ${executeTransactions}`);
     return await Promise.all(executeTransactions).then(transc => {
-      console.log(transc);
       return transc;
     });
   }
